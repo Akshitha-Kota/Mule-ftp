@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="af7be04d-c64d-4770-9242-7ce3ff5539dc" >
+		<db:oracle-connection host="localhost" user="system" password="admin" instance="XE" />
+	</db:config>
+	<flow name="ud-read-file-empFlow" doc:id="e9d55774-6c06-4e00-8b1d-4dc5992c3aa0" >
+		<scheduler doc:name="Scheduler" doc:id="885b1c68-f602-4e80-bd42-eb5656bd838e" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</scheduler>
+		<file:read doc:name="Employee CSV file Read" doc:id="906ed00f-e3a1-447d-9680-d171316e0e07" path="C:\Users\Anna Reddy\Desktop\employee.csv"/>
+		<ee:transform doc:name="Transform Message" doc:id="7e1368de-0b3f-4574-afb5-6751a1a82683" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	emp_id: payload01.id,
+	emp_name: payload01.name,
+	emp_address: payload01.address,
+	emp_phone: payload01.phone,
+	emp_mail: payload01.mail
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="88dc6393-1a0d-45d0-8fe0-80ace8bc61a3" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into emp_master(emp_id, emp_name, emp_address, emp_phone, emp_mail) values(:emp_id, :emp_name, :emp_address, :emp_phone, :emp_mail)
+]]></db:sql>
+		</db:bulk-insert>
+		<logger level="INFO" doc:name="Logger" doc:id="1d4cedd9-8fc6-4ce5-8c46-1c3c57702736" message="#[payload]"/>
+	</flow>
+</mule>

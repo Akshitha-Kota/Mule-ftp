@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="inputCSVmetadata" format="csv">
+      <types:shape format="weave" example="examples/employee.csv"><![CDATA[%dw 2.0
+
+type inputCSVmetadata = Array<{|  id: Number,   name: String,   address: String,   phone: Number,   mail: String,   gender: String,   city: String|}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0"}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+      </types:properties>
+    </types:type>
+    <types:type name="outputCSVmetadata" format="json">
+      <types:shape format="weave" example="examples/output.json"><![CDATA[%dw 2.0
+
+type outputCSVmetadata = Array<{|  emp_id: Number {"typeId": "int"},   emp_name: String,   emp_address: String,   emp_phone: Number {"typeId": "int"},   emp_mail: String|}> {"example": "[{\\\"emp_id\\\":100,\\\"emp_name\\\":\\\"peter\\\",\\\"emp_address\\\":\\\"india\\\",\\\"emp_phone\\\":85245893,\\\"emp_mail\\\":\\\"peter@gmal.com\\\"},{\\\"emp_id\\\":101,\\\"emp_name\\\":\\\"jenny\\\",\\\"emp_address\\\":\\\"india\\\",\\\"emp_phone\\\":284558152,\\\"emp_mail\\\":\\\"john@gmal.com\\\"},{\\\"emp_id\\\":104,\\\"emp_name\\\":\\\"lisa\\\",\\\"emp_address\\\":\\\"india\\\",\\\"emp_phone\\\":5863440,\\\"emp_mail\\\":\\\"lisa@gmal.com\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#7e1368de-0b3f-4574-afb5-6751a1a82683">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="inputCSVmetadata"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="outputCSVmetadata"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

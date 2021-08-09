@@ -1,0 +1,23 @@
+[
+{
+	"emp_id": 100,
+	"emp_name": "peter",
+	"emp_address":"india",
+	"emp_phone": 85245893,
+	"emp_mail":"peter@gmal.com"
+},
+{
+	"emp_id": 101,
+	"emp_name": "jenny",
+	"emp_address":"india",
+	"emp_phone": 284558152,
+	"emp_mail":"john@gmal.com"
+},
+{
+	"emp_id": 104,
+	"emp_name": "lisa",
+	"emp_address":"india",
+	"emp_phone": 5863440,
+	"emp_mail":"lisa@gmal.com"
+}
+]
