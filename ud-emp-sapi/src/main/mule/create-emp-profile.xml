@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="create-emp-profileFlow" doc:id="5b56f9e3-db45-48c2-80ce-3f70fca6372b" >
+		<http:listener doc:name="Create Emp Profile Listener" doc:id="cf66f16e-6c54-41c1-919a-cdfad5a3b784" config-ref="HTTP_Listener_config" path="create-emp-profile" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Start Log" doc:id="bfd9fe46-0f94-448d-8c07-36151d079f4a" message="Flow started"/>
+		<db:insert doc:name="Insert Emp Profile" doc:id="f4860c03-3007-45a8-af4e-4f867f7fca53" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into emp_profile(emp_name, emp_phone, emp_mail, emp_skills) values(:empName, :empPhone, :empMail, :empSkills)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	empName:payload.employeeName,
+	empPhone:payload.employeePhone,
+	empMail:payload.employeeMail,
+	empSkills:payload.employeeSkills
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="05d2f24b-3ff7-4b5c-a43f-737360b7a1be" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status: 200,
+	message:"success"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End log" doc:id="12be3ee5-5da8-41e6-9715-0678590958a7" message="Flow ended"/>
+	</flow>
+</mule>

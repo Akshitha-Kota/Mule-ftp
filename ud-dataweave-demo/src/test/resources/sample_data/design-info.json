@@ -1,0 +1,10 @@
+{
+  "sampleData": {
+    "ab289bb3-dd86-4c22-88b0-b54b0635756b": {
+      "payload": "sample_data/excel.xlsx"
+    },
+    "7374456f-9801-4124-aba5-aae9a82856bf": {
+      "payload": "sample_data/json.json"
+    }
+  }
+}

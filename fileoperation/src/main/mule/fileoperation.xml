@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7d48b0f4-9af8-4c40-88b8-b5e463015ae2" >
+		<http:listener-connection host="0.0.0.0" port="8085" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="e1440a73-bfd1-48dd-b4b8-df8f7e685fd4" />
+	<flow name="fileoperationFlow" doc:id="216629f1-c3fe-4eea-b879-1bbf4391719a" >
+		<http:listener doc:name="Listener" doc:id="09b796a4-ee05-46dc-8afa-a37594c3892e" config-ref="HTTP_Listener_config" path="/filetest"/>
+		<logger level="INFO" doc:name="Logger" doc:id="934dadc2-aef9-4071-8e35-065922d62969" message="incoming input ::#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="1b2acec1-18f1-43d0-acea-e08235aac519" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	eid: payload01.empId,
+	ename: payload01.empName,
+	esal: payload01.empsal as Number,
+	eloc: payload01.emploc
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="5b2c9601-c650-45fe-8e98-4401a2fa01ee" config-ref="File_Config" path="C:\Users\Anna Reddy\Desktop\Akshitha\Resources download\Mulesoft\DATA\Outbound\sample.csv"/>
+	</flow>
+</mule>

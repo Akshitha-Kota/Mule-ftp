@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="jsoninput" format="json">
+      <types:shape format="weave" example="examples/mule23-input.json"><![CDATA[%dw 2.0
+
+type jsoninput = {|
+  empId: String, 
+  empName: String, 
+  empsal: String, 
+  emploc: String
+|} {"example": "{\\\"empId\\\":\\\"100\\\",\\\"empName\\\":\\\"Akshitha\\\",\\\"empsal\\\":\\\"20000\\\",\\\"emploc\\\":\\\"india\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="csvType" format="csv">
+      <types:shape format="weave"><![CDATA[%dw 2.0
+
+type csvType = Array<{|  eid: String,   ename: String,   esal: Number,   eloc: String|}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0"}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+      </types:properties>
+    </types:type>
+    <types:type name="jsonarrayinput" format="json">
+      <types:shape format="weave" example="examples/mule23-input-1.json"><![CDATA[%dw 2.0
+
+type jsonarrayinput = Array<{|  empId: String,   emName: String,   empsal: String,   emploc: String,   empName: String|}> {"example": "[{\\\"empId\\\":\\\"100\\\",\\\"emName\\\":\\\"Akshitha\\\",\\\"empsal\\\":\\\"20000\\\",\\\"emploc\\\":\\\"india\\\"},{\\\"empId\\\":\\\"200\\\",\\\"empName\\\":\\\"Akshi\\\",\\\"empsal\\\":\\\"30000\\\",\\\"emploc\\\":\\\"india\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="jsonarray" format="json">
+      <types:shape format="weave" example="examples/mule23-input-2.json"><![CDATA[%dw 2.0
+
+type jsonarray = Array<{|  empId: String,   empName: String,   empsal: String,   emploc: String|}> {"example": "[{\\\"empId\\\":\\\"100\\\",\\\"empName\\\":\\\"Akshitha\\\",\\\"empsal\\\":\\\"20000\\\",\\\"emploc\\\":\\\"india\\\"},{\\\"empId\\\":\\\"200\\\",\\\"empName\\\":\\\"Akshi\\\",\\\"empsal\\\":\\\"30000\\\",\\\"emploc\\\":\\\"india\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#1b2acec1-18f1-43d0-acea-e08235aac519">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="jsonarray"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="csvType"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
